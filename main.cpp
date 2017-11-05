@@ -1,32 +1,23 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <iostream>
 
-int main()
+using namespace std;
+
+const sf::IpAddress IP = "10.0.2.15";
+const int PORT = 2000;
+
+int main(int argc, char const *argv[])
 {
-    sf::RenderWindow window(sf::VideoMode(640, 480), "SFML Application");
+    string id;
+    cout << "Nombre de Usuario: " << endl;
+    cin >> id;
 
-    sf::CircleShape shape;
+    sf::TcpSocket socket;
+    socket.connect(IP,PORT);
 
-    shape.setRadius(40.f);
-
-    shape.setPosition(100.f, 100.f);
-
-    shape.setFillColor(sf::Color::Cyan);
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-
-        }
-        window.clear();
-
-        window.draw(shape);
-
-        window.display();
-
-    }
+    sf::Packet packet;
+    packet << id;
+    socket.send(packet);
+    return 0;
 }
