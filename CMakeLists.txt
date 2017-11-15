@@ -3,7 +3,7 @@ project(TECFS_Test)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp VideoHandler.cpp VideoHandler.h Singleton.cpp Singleton.h)
 add_executable(TECFS_Test ${SOURCE_FILES})
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")

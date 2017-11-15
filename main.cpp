@@ -1,55 +1,48 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
-#include <fstream>
 #include <iostream>
-
-typedef unsigned char byte;
-
-const sf::IpAddress IP = "127.0.0.1";
-const int PORT = 2000;
-sf::TcpSocket socket;
-
-int sendVideo(std::string path);
+#include "VideoHandler.h"
 
 int main(){
+    Singleton::connectToServer("127.0.0.1", 2001);
 
-    socket.connect(IP, PORT);
+    while(true) {
+        int action;
+        std::string filename;
+        std::cout << "Ingrese el numero de la accion a realizar: " << std::endl;
+        std::cout << "1. Enviar video" << std::endl;
+        std::cout << "2. Recibir video" << std::endl;
+        std::cout << "3. Obtener tabla" << std::endl;
+        std::cin >> action;
 
-    sf::Packet packet;
-    packet << "Arturocv";
-    socket.send(packet);
+        if (action == 1) {
+            std::cout << "Ingrese el nombre del video (con extension): " << std::endl;
+            std::cin >> filename;
+            VideoHandler::sendVideo(filename);
 
-    sendVideo("test.mp4");
+            //sendVideo("test.mp4");
+        } else if (action == 2) {
+            std::cout << "Ingrese el nombre del video (sin extension): " << std::endl;
+            std::cin >> filename;
+            VideoHandler::getVideo(filename);
 
-    return 0;
-}
+            //getVideo("test");
+        } else if(action == 3){
+            sf::Packet packet;
+            packet << "getTable";
+            Singleton::getServer()->send(packet);
 
-int sendVideo(std::string path) {
-    sf::Packet actionPacket;
-    actionPacket << "save";
-    socket.send(actionPacket);
+            //Se espera a recibir la respuesta del servidor
+            sf::Packet receivePacket;
+            std::string receiveMessage;
+            while(true){
+                if (Singleton::getServer()->receive(receivePacket) == sf::Socket::Done) {
+                    receivePacket >> receiveMessage;
+                    break;
+                }
+            }
 
-    sf::Packet videoPacket;
-    std::ifstream file(path, std::ios::binary);
-
-    //Se verifica que el video haya sido cargado de manera existosa
-    if(!file.is_open()){
-        std::cout << "Couldn't open the binary file" << std::endl;
-        return -1;
+            std::cout << std::endl << receiveMessage << std::endl << std::endl;
+        }
     }
-
-    //Se convierte el video a un string de <uchar>
-    std::vector<byte> vector((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    std::string vectorString(vector.begin(), vector.end());
-    file.close();
-
-    //Se envia el video
-    videoPacket << vectorString;
-    socket.send(videoPacket);
-
-    sf::Packet donePacket;
-    donePacket << "done";
-    socket.send(donePacket);
 
     return 0;
 }
