@@ -12,7 +12,7 @@ int VideoHandler::sendVideo(std::string pathFile) {
 
     //Se verifica que el video haya sido cargado de manera existosa
     if(!file.is_open()){
-        std::cout << "Couldn't open the binary file" << std::endl;
+        std::cout << "Couldn't open the file" << std::endl;
         return -1;
 
     } else {
@@ -48,20 +48,17 @@ void VideoHandler::getVideo(std::string fileName){
     //Se espera a recibir la respuesta del servidor
     sf::Packet receivePacket;
     std::string receiveMessage;
-    while(true){
-        if (Singleton::getServer()->receive(receivePacket) == sf::Socket::Done) {
-            receivePacket >> receiveMessage;
-            break;
-        }
+
+    if (Singleton::getServer()->receive(receivePacket) == sf::Socket::Done) {
+        receivePacket >> receiveMessage;
     }
+
 
     ///LAS SIGUIENTES LINEAS SERAN ELIMINADAS EN NUEVAS VERSIONES
 
     //Se guarda el video recibido
     std::string extension;
     receivePacket >> extension;
-
-    std::cout << extension << std::endl;
 
     std::vector<byte> vector(receiveMessage.begin(), receiveMessage.end());
     std::ofstream file;
