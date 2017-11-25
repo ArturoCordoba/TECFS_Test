@@ -26,8 +26,7 @@ int main(){
             std::cout << "Ingrese el nombre del video (sin extension): " << std::endl;
             std::cin >> filename;
             VideoHandler::getVideo(filename);
-
-            VideoHandler::getVideo("test");
+            
         } else if(action == 3){
             sf::Packet packet;
             packet << "getTable";
