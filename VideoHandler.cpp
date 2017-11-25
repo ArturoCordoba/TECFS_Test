@@ -38,7 +38,7 @@ int VideoHandler::sendVideo(std::string pathFile) {
 
 /// Metodo para obtener un video del servidor
 /// \param fileName Nombre del video que se quiere obtener
-void VideoHandler::getVideo(std::string fileName){
+std::string VideoHandler::getVideo(std::string fileName){
     //Se envia al servidor la accion que se quiere realizar
     sf::Packet packet;
     packet << "getVideo";
@@ -54,8 +54,6 @@ void VideoHandler::getVideo(std::string fileName){
     }
 
 
-    ///LAS SIGUIENTES LINEAS SERAN ELIMINADAS EN NUEVAS VERSIONES
-
     //Se guarda el video recibido
     std::string extension;
     receivePacket >> extension;
@@ -65,4 +63,6 @@ void VideoHandler::getVideo(std::string fileName){
     file.open("receive." + extension, std::ios::out | std::ios::binary);
     file.write((const char*) &vector[0], vector.size());
     file.close();
+
+    return receiveMessage;
 }

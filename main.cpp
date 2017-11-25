@@ -1,77 +1,168 @@
 #include <iostream>
+#include <SFML/Graphics.hpp>
 #include <cstring>
 #include "VideoHandler.h"
-#include "DataStructures/LinkedList.h"
+#include "Menu.h"
+#include <SFML/OpenGL.hpp>
 
-LinkedList<std::string> splitString(std::string string, char *splitCharacter);
 
-int main(){
-    Singleton::connectToServer("127.0.0.1", 2001);
+int main() {
 
-    while(true) {
-        int action;
-        std::string filename;
-        std::cout << "Ingrese el numero de la accion a realizar: " << std::endl;
-        std::cout << "1. Enviar video" << std::endl;
-        std::cout << "2. Recibir video" << std::endl;
-        std::cout << "3. Obtener tabla" << std::endl;
-        std::cin >> action;
+    Singleton::connectToServer("192.168.100.9", 2001);
+    int numberOfWindow = 0;
+    sf::RenderWindow window;
+    window.create(sf::VideoMode(640,480), "TECFS_Test");
+    window.setPosition(sf::Vector2i(100,100));
 
-        if (action == 1) {
-            std::cout << "Ingrese el nombre del video (con extension): " << std::endl;
-            std::cin >> filename;
-            VideoHandler::sendVideo(filename);
+    sf::Texture bg;
+    sf::Sprite bgS;
+    if(!bg.loadFromFile("bg.jpg"))
+        std::cout << "Error could not load nave image" << std::endl;
+    bgS.setTexture(bg);
+    bgS.setScale(0.5f,0.5f);
 
-        } else if (action == 2) {
-            std::cout << "Ingrese el nombre del video (sin extension): " << std::endl;
-            std::cin >> filename;
-            VideoHandler::getVideo(filename);
-            
-        } else if(action == 3){
-            sf::Packet packet;
-            packet << "getTable";
-            Singleton::getServer()->send(packet);
+    Menu menu(window.getSize().x, window.getSize().y);
+    menu.itemsMenu();
+    std::string display = "";
 
-            //Se espera a recibir la respuesta del servidor
-            sf::Packet receivePacket;
-            std::string receiveMessage;
-            if (Singleton::getServer()->receive(receivePacket) == sf::Socket::Done) {
-                receivePacket >> receiveMessage;
+    while (window.isOpen()){
+
+        if (numberOfWindow == 0) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                switch (event.type) {
+                    case sf::Event::KeyReleased:
+                        switch (event.key.code) {
+                            case sf::Keyboard::Up:
+                                menu.MoveUp();
+                                break;
+
+                            case sf::Keyboard::Down:
+                                menu.MoveDown();
+                                break;
+
+                            case sf::Keyboard::Tab:
+                                switch (menu.GetPressdItem()) {
+                                    case 0:
+                                        numberOfWindow = 1;
+                                        menu.itemsSearch();
+                                        menu.typeOfWindow = 2;
+                                        display = "";
+                                        break;
+
+                                    case 1:
+                                        numberOfWindow = 2;
+                                        menu.itemsSave();
+                                        menu.typeOfWindow = 2;
+                                        display = "";
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+
+                    case sf::Event::Closed:
+                        window.close();
+                        break;
+                }
             }
 
-            std::string table = "";
-            LinkedList<std::string> rows = splitString(receiveMessage.c_str(), "/");
-            for (int i = 0; i < rows.getSize(); ++i) {
-                table += rows.getElement(i)->getData() + "\n";
+        } if (numberOfWindow == 1) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                switch (event.type) {
+                    case sf::Event::KeyReleased:
+                        switch (event.key.code) {
+                            case sf::Keyboard::Up:
+                                menu.MoveUp();
+                                break;
+
+                            case sf::Keyboard::Down:
+                                menu.MoveDown();
+                                break;
+
+                            case sf::Keyboard::Tab:
+                                switch (menu.GetPressdItem()) {
+                                    case 0:
+                                        menu.search();
+                                        break;
+
+                                    case 2:
+                                    case 3:
+                                    case 4:
+                                    case 5:
+                                    case 6:
+                                    case 7:
+                                    case 8:
+                                    case 9:
+                                        menu.playVideo(menu.GetPressdItem());
+                                        break;
+                                }
+                        }
+                        break;
+
+                    case sf::Event::TextEntered:
+                        if (event.text.unicode >= 20 && event.text.unicode <= 126)
+                            display += (char) event.text.unicode;
+                        else if (event.text.unicode == 8)
+                            display = display.substr(0, display.length() - 1);
+                        menu.setDisplay(display);
+                        break;
+
+                    case sf::Event::Closed:
+                        numberOfWindow = 0;
+                        menu.itemsMenu();
+                        menu.typeOfWindow = 0;
+                        break;
+
+                }
             }
 
-            std::vector<byte> vector(table.begin(), table.end());
-            std::ofstream file;
-            file.open("data.csv", std::ios::out | std::ios::binary);
-            file.write((const char*) &vector[0], vector.size());
-            file.close();
+        } if (numberOfWindow == 2) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                switch (event.type) {
+                    case sf::Event::KeyReleased:
+                        switch (event.key.code) {
+                            case sf::Keyboard::Up:
+                                menu.MoveUp();
+                                break;
+
+                            case sf::Keyboard::Down:
+                                menu.MoveDown();
+                                break;
+
+                            case sf::Keyboard::Tab:
+                                switch (menu.GetPressdItem()) {
+                                    case 0:
+                                        menu.saveVideo();
+                                        break;
+                                }
+                        }
+                        break;
+
+                    case sf::Event::TextEntered:
+                        if (event.text.unicode >= 20 && event.text.unicode <= 126)
+                            display += (char) event.text.unicode;
+                        else if (event.text.unicode == 8)
+                            display = display.substr(0, display.length() - 1);
+                        menu.setDisplay(display);
+                        break;
+
+                    case sf::Event::Closed:
+                        numberOfWindow = 0;
+                        menu.itemsMenu();
+                        menu.typeOfWindow = 0;
+                        break;
+                }
+            }
         }
 
-        action = 0;
-        filename = "";
+        window.clear();
+        window.draw(bgS);
+        menu.draw(window);
+        window.display();
     }
 
     return 0;
-}
-
-/// Metodo para dividir un string en elementos
-/// \param string String a separar
-/// \param splitCharacter Caracter utilizado para separar los elementos
-/// \return LinkedList con los elementos obtenidos de la separacion
-LinkedList<std::string> splitString(std::string string, char *splitCharacter) {
-    LinkedList<std::string> list = LinkedList<std::string>(); //Lista en la que se guardan los elementos
-    char* messageChar = strdup(string.c_str()); //Se transforma el mensaje a char*
-    char* element = strtok(messageChar, splitCharacter); //Separa el char cuando lea el splitCharacter
-    while (element != NULL) {
-        std::string str(element);
-        list.insertAtEnd(str); // Se guarda el dato en la lista
-        element = strtok (NULL, splitCharacter);  // Separa el resto de la cadena cuando lea la coma
-    }
-
-    return list;
 }

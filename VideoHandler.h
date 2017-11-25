@@ -17,7 +17,7 @@ class VideoHandler {
 public:
     static int sendVideo(std::string pathFile);
 
-    static void getVideo(std::string fileName);
+    static std::string getVideo(std::string fileName);
 };
 
 
