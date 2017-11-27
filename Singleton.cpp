@@ -27,10 +27,13 @@ void Singleton::connectToServer(std::string ip, int port) {
     }
 
     //Se conecta al servidor y le indica que se trata de un cliente
-    server->connect(sf::IpAddress(ip), port);
-    sf::Packet packet;
-    packet << "client";
-    server->send(packet);
+    if(server->connect(sf::IpAddress(ip), port) == sf::Socket::Done){
+        sf::Packet packet;
+        packet << "client";
+        server->send(packet);
+    } else{
+        std::cout << "Couldn't connect to the server" << std::endl;
+    }
 }
 
 sf::TcpSocket *Singleton::getServer() {

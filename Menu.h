@@ -9,7 +9,6 @@
 #include <SFML/Network/Packet.hpp>
 #include <dirent.h>
 #include "DataStructures/LinkedList.h"
-#include <opencv2/highgui/highgui.hpp>
 
 #define NumberOfItems 10
 

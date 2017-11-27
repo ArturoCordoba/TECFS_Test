@@ -6,6 +6,7 @@
 #include "Menu.h"
 #include "Singleton.h"
 #include "VideoHandler.h"
+#include "VideoPlayer/VideoPlayerWindow.h"
 
 Menu::Menu(float width, float height)
 {
@@ -240,25 +241,7 @@ void Menu::playVideo(int i)
 {
     if(menu[i].getString() != " ") {
         std::string video = VideoHandler::getVideo(menu[i].getString());
-        cv::VideoCapture cap("receive.mp4");
-
-        if (!cap.isOpened()) {
-            std::cout << "Cannot open the video file. \n";
-        }
-        double fps = cap.get(CV_CAP_PROP_FPS);
-        cv::namedWindow("Reproductor", CV_WINDOW_AUTOSIZE);
-        while (1) {
-            cv::Mat frame;
-            if (!cap.read(frame)) {
-                std::cout << "\n Cannot read the video file. \n";
-                break;
-            }
-            imshow("Reproductor", frame);
-
-            if(cv::waitKey(30) >= 0) {
-                break;
-            }
-        }
+        VideoPlayerWindow::render("receive.mp4");
     }
 }
 

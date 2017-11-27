@@ -1,14 +1,16 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <cstring>
 #include "VideoHandler.h"
 #include "Menu.h"
-#include <SFML/OpenGL.hpp>
 
 
 int main() {
+    std::string ip;
+    std::cout << "Ingrese la IP del servidor: ";
+    std::cin >> ip;
 
-    Singleton::connectToServer("192.168.100.9", 2001);
+    Singleton::connectToServer(ip, 2001);
+
     int numberOfWindow = 0;
     sf::RenderWindow window;
     window.create(sf::VideoMode(640,480), "TECFS_Test");
