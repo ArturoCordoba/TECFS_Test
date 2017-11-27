@@ -9,6 +9,7 @@
 #include <SFML/Network/Packet.hpp>
 #include <SFML/Network/Socket.hpp>
 #include <fstream>
+#include <dirent.h>
 #include "Singleton.h"
 
 typedef unsigned char byte;
@@ -16,6 +17,8 @@ typedef unsigned char byte;
 class VideoHandler {
 public:
     static int sendVideo(std::string pathFile);
+
+    static int sendDirectory(std::string pathDirectory);
 
     static std::string getVideo(std::string fileName);
 };

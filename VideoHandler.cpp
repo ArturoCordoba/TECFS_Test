@@ -70,3 +70,27 @@ std::string VideoHandler::getVideo(std::string fileName){
 
     return receiveMessage;
 }
+
+/// Metodo para enviar los archivos que se encuentren dentro de una carpeta
+/// \param pathDirectory Path de la carpeta
+/// \return 0 si no ocurrieron errores, -1 en caso contrario.
+int VideoHandler::sendDirectory(std::string pathDirectory) {
+    DIR* dir;
+    struct dirent *ent;
+    //Se intenta abrir el directorio
+    if((dir = opendir(pathDirectory.c_str())) != NULL){
+        //Se lee cada archivo dentro del directorio
+        while((ent = readdir(dir)) != NULL) {
+            std::string fileName = ent->d_name;
+            //Se verifica que sea un nombre de video valido
+            if (fileName.size() > 4 && Singleton::splitString(fileName, ".").getSize() == 2) {
+                sendVideo(pathDirectory + "/" + fileName);
+            }
+        }
+        closedir(dir);
+        return 0;
+
+    } else{
+        return -1;
+    }
+}
