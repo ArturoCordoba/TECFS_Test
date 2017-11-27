@@ -8,7 +8,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network/Packet.hpp>
 #include <dirent.h>
+#include <cstring>
 #include "DataStructures/LinkedList.h"
+#include "Singleton.h"
+#include "VideoHandler.h"
+#include "VideoPlayer/VideoPlayerWindow.h"
+
 
 #define NumberOfItems 10
 
@@ -30,7 +35,6 @@ public:
     void search();
     void playVideo(int i);
     std::string display = "";
-
     void saveVideo();
 
 private:
@@ -42,7 +46,6 @@ private:
     LinkedList<std::string> names;
     void clearItems();
     void getTable();
-    LinkedList<std::string> splitString(std::string string, char *splitCharacter);
     LinkedList<std::string> coincidence();
 };
 

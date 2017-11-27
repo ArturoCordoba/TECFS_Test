@@ -9,6 +9,7 @@
 #include <iostream>
 #include <SFML/Network/TcpSocket.hpp>
 #include <SFML/Network/IpAddress.hpp>
+#include "DataStructures/LinkedList.h"
 
 class Singleton {
 public:
@@ -17,6 +18,8 @@ public:
     static void connectToServer(std::string ip, int port);
 
     static sf::TcpSocket* getServer();
+
+    static LinkedList <std::string> splitString(std::string string, char *splitCharacter);
 
 private:
     static Singleton* instance;

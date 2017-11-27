@@ -3,7 +3,9 @@
 //
 
 #include <SFML/Network/Packet.hpp>
+#include <cstring>
 #include "Singleton.h"
+#include "DataStructures/LinkedList.h"
 
 Singleton* Singleton::instance = nullptr;
 sf::TcpSocket* Singleton::server = nullptr;
@@ -42,4 +44,20 @@ sf::TcpSocket *Singleton::getServer() {
     }
 
     return server;
+}
+
+/// Metodo para dividir un string en elementos
+/// \param string String a separar
+/// \param splitCharacter Caracter utilizado para separar los elementos
+/// \return LinkedList con los elementos obtenidos de la separacion
+LinkedList<std::string> Singleton::splitString(std::string string, char *splitCharacter) {
+    LinkedList<std::string> list = LinkedList<std::string>(); //Lista en la que se guardan los elementos
+    char* messageChar = strdup(string.c_str()); //Se transforma el mensaje a char*
+    char* element = strtok(messageChar, splitCharacter); //Separa el char cuando lea el splitCharacter
+    while (element != NULL) {
+        std::string str(element);
+        list.insertAtEnd(str); // Se guarda el dato en la lista
+        element = strtok (NULL, splitCharacter);  // Separa el resto de la cadena cuando lea la coma
+    }
+    return list;
 }

@@ -16,10 +16,14 @@ int VideoHandler::sendVideo(std::string pathFile) {
         return -1;
 
     } else {
+        //Se obtiene el nombre del video del path ingresado
+        LinkedList<std::string> list = Singleton::splitString(pathFile, "/");
+        std::string videoName = list.getElement(list.getSize() -1)->getData();
+
         //Se le indica al servidor que se quiere almacenar un video
         sf::Packet actionPacket;
         actionPacket << "saveVideo";
-        actionPacket << pathFile;
+        actionPacket << videoName;
         Singleton::getServer()->send(actionPacket);
 
         //Se convierte el video a un string de <uchar>

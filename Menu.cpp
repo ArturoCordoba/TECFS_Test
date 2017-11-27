@@ -2,11 +2,7 @@
 // Created by adrian on 19/11/17.
 //
 
-#include <cstring>
 #include "Menu.h"
-#include "Singleton.h"
-#include "VideoHandler.h"
-#include "VideoPlayer/VideoPlayerWindow.h"
 
 Menu::Menu(float width, float height)
 {
@@ -170,11 +166,11 @@ void Menu::getTable()
         receivePacket >> receiveMessage;
     }
 
-    LinkedList<std::string> elements = splitString(receiveMessage, "/");
+    LinkedList<std::string> elements = Singleton::splitString(receiveMessage, "/");
     LinkedList<std::string> names = LinkedList<std::string>();
 
     for (int i = 1; i < elements.getSize(); ++i) {
-        std::string name = splitString(elements.getElement(i)->getData(), ";").getElement(0)->getData();
+        std::string name = Singleton::splitString(elements.getElement(i)->getData(), ";").getElement(0)->getData();
         names.insertAtEnd(name);
     }
 
@@ -243,22 +239,6 @@ void Menu::playVideo(int i)
         std::string video = VideoHandler::getVideo(menu[i].getString());
         VideoPlayerWindow::render("receive.mp4");
     }
-}
-
-/// Metodo para dividir un string en elementos
-/// \param string String a separar
-/// \param splitCharacter Caracter utilizado para separar los elementos
-/// \return LinkedList con los elementos obtenidos de la separacion
-LinkedList<std::string> Menu::splitString(std::string string, char *splitCharacter) {
-    LinkedList<std::string> list = LinkedList<std::string>(); //Lista en la que se guardan los elementos
-    char* messageChar = strdup(string.c_str()); //Se transforma el mensaje a char*
-    char* element = strtok(messageChar, splitCharacter); //Separa el char cuando lea el splitCharacter
-    while (element != NULL) {
-        std::string str(element);
-        list.insertAtEnd(str); // Se guarda el dato en la lista
-        element = strtok (NULL, splitCharacter);  // Separa el resto de la cadena cuando lea la coma
-    }
-    return list;
 }
 
 LinkedList<std::string> Menu::coincidence()
