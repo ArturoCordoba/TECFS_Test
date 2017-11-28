@@ -124,5 +124,7 @@ int VideoPlayerWindow::render(std::string fileName) {
         window.display();
     }
 
+    Menu::run();
+
     return 0;
 }

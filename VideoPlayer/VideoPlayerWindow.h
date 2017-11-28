@@ -11,6 +11,7 @@
 #include <iostream>
 #include "UserInterface.hpp"
 #include "StreamSelector.hpp"
+#include "../Menu.h"
 
 class VideoPlayerWindow {
 public:

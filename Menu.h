@@ -15,7 +15,7 @@
 #include "VideoPlayer/VideoPlayerWindow.h"
 
 
-#define NumberOfItems 10
+#define NumberOfItems 11
 
 class Menu
 {
@@ -23,12 +23,16 @@ public:
     Menu(float width, float height);
     ~Menu();
 
+    static void run();
+
     void draw(sf::RenderWindow &window);
     void MoveUp();
     void MoveDown();
     void itemsMenu();
+    void itemsMenuSave();
     void itemsSearch();
     void itemsSave();
+    void itemsSaveDirectory();
     int typeOfWindow;
     int GetPressdItem() {return  selectedItemIndex;}
     void setDisplay(std::string string);
@@ -36,6 +40,7 @@ public:
     void playVideo(int i);
     std::string display = "";
     void saveVideo();
+    void saveDirectory();
 
 private:
     float width;
